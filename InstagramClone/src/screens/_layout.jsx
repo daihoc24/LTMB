@@ -5,7 +5,7 @@ import SignIn from './SignIn';
 import TabsLayout from './(tabs)/_layout';
 import AuthsLayout from './(auths)/_layout';
 import ConversationLayout from './(conversations)/_layout';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from '../context/AuthContext';
 import ChatLayout from './(message)/_layout';
 import { config } from './Link';
 import CameraLayout from './(camera)/_layout';
