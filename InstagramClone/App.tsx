@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import RootLayout from './src/_layout';
+import RootLayout from './src/screens/_layout';
 import {PaperProvider, MD3LightTheme, MD3DarkTheme} from 'react-native-paper';
 import {lightScheme} from './src/config/lightScheme';
 import {darkScheme} from './src/config/darkScheme';
