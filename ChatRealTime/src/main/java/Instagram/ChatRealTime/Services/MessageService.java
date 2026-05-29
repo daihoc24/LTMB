@@ -32,4 +32,71 @@ public class MessageService {
     public Message saveMessage(Message message){
         return messageRepository.save(message);
     }
+    //Lấy ra danh sách bạn bè và tin nhắn cuối cùng
+    public List<MessegeRequest> ListFriendMessage(UUID userIdSend){
+        List<User> userMessage = messageRepository.findAllFriendsByUserId(userIdSend); //Lấy danh sách của bạn bè nhắn tin của người dùng
+        List<MessegeRequest> result = new ArrayList<>();
+        for(User item : userMessage) {
+            List<Message> messages = messageRepository.findLastMessagesBetweenUsers(userIdSend,item.getId());
+            Message lastMessage = messages.get(0);
+            System.out.println(lastMessage);
+
+            boolean visible = false;
+            boolean status = false;
+
+            LocalDateTime currentTime = LocalDateTime.now();
+            LocalDateTime createdAt = lastMessage.getCreatedAt().toLocalDateTime();
+
+//            // Tính khoảng thời gian giữa hai thời điểm
+            Duration duration = Duration.between(createdAt, currentTime);
+//
+//            // Lấy số ngày, giờ, phút, và giây
+            long days = duration.toDays();
+            long hours = duration.toHoursPart();
+            long minutes = duration.toMinutesPart();
+            long seconds = duration.toSecondsPart();
+            String time = "";
+            if(days > 0){
+                time = days + " day";
+            }else if(days == 0 && hours > 0){
+                time = hours + " hours";
+            }else if(days == 0 && hours == 0 && minutes > 0){
+                time = minutes + " minutes";
+            }else {
+                time = "now";
+            }
+
+            if(lastMessage.getUserIdSend().equals(userIdSend)) visible = true;
+            Timestamp timeCreateAt = lastMessage.getCreatedAt();
+            int type = 0;
+            result.add(new MessegeRequest(
+                    String.valueOf(item.getId()),
+                    lastMessage.getContent(),
+                    item.getUsername(),
+                    item.getAvatar(),
+                    time,
+                    visible,
+                    status,
+                    timeCreateAt
+            ));
+
+        }
+        List<MessegeRequest> groupChatList = groupChatService.listGroup(userIdSend);
+        if(groupChatList!=null){
+            result.addAll(groupChatList);
+            result.sort(Comparator.comparing(MessegeRequest::getTimeCreateAt).reversed());
+        }
+
+        return result;
+    }
+
+    public List<User> listFollowing(UUID userId){
+        return messageRepository.listFollowers(userId);
+    }
+
+    //Thu hồi tn
+    public boolean setVisibleMessage(int idMessage){
+        if(messageRepository.setVisibleMessage(idMessage) > 0) return true;
+        return false;
+    }
 }
