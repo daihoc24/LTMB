@@ -94,9 +94,4 @@ public class MessageService {
         return messageRepository.listFollowers(userId);
     }
 
-    //Thu hồi tn
-    public boolean setVisibleMessage(int idMessage){
-        if(messageRepository.setVisibleMessage(idMessage) > 0) return true;
-        return false;
-    }
 }
