@@ -25,6 +25,38 @@ public class ChatController {
         this.messagingTemplate = messagingTemplate;
     }
 
+    // Nhan tin nhan va luu vao database
+//    @MessageMapping("/chat")
+//    @SendTo("/topic/messages")
+//    public void sendMessage(@Payload ChatMessage receivedMessage) {
+//        System.out.println(receivedMessage.toString());
+//        Message responseMessage = new Message();
+//        responseMessage.setUserIdSend(UUID.fromString(receivedMessage.getUserIdSend()));
+//
+//        // Determine if the message is for a group or a one-on-one chat
+//        if (receivedMessage.isType()) {
+//            System.out.println("Group chat detected");
+//            responseMessage.setGroupChatId(Long.valueOf(receivedMessage.getUserIdTo()));
+//            responseMessage.setUserIdTo(null);
+//        } else {
+//            responseMessage.setUserIdTo(UUID.fromString(receivedMessage.getUserIdTo()));
+//        }
+//
+//        responseMessage.setContent(receivedMessage.getContent());
+//        responseMessage.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+//        responseMessage.setVisible(true);
+//
+//        // Save the message and handle success/failure
+//        Message messResponse = messageService.saveMessage(responseMessage);
+//        if (messResponse != null) {
+//            // Notify clients about the new message
+//            messagingTemplate.convertAndSend("/topic/messages", responseMessage);
+//        } else {
+//            // Handle failure case (optional)
+//            System.out.println("Failed to save message");
+//        }
+//    }
+
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public void sendMessage(@Payload ChatMessage receivedMessage) {
@@ -68,5 +100,8 @@ public class ChatController {
         }
     }
 
+    private String convertTime(){
+        return "";
+    }
 
 }
