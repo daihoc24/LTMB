@@ -226,7 +226,7 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping(" / {id}")
+    @GetMapping("/{id}")
     ApiResponse<UserResponse> getUser(@PathVariable String id) {
 
         return ApiResponse.<UserResponse>builder()
@@ -261,7 +261,7 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping("/my-info")
+    @GetMapping("/my-info")
     ApiResponse<UserResponse> getMyInfo() {
         return ApiResponse.<UserResponse>builder().result(userService.getMyInfo()).build();
     }
