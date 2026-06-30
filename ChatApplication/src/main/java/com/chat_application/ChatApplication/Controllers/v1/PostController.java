@@ -1,0 +1,215 @@
+package com.chat_application.ChatApplication.Controllers.v1;
+
+import com.chat_application.ChatApplication.Dto.Request.BlogCreateReq;
+import com.chat_application.ChatApplication.Dto.Request.BlogUpdateReq;
+import com.chat_application.ChatApplication.Dto.Request.UserReq;
+import com.chat_application.ChatApplication.Dto.Request.UsernameRequest;
+import com.chat_application.ChatApplication.Dto.Response.ApiResponse;
+import com.chat_application.ChatApplication.Dto.Response.PostResponse;
+import com.chat_application.ChatApplication.Dto.Response.PostResponseWithoutUser;
+import com.chat_application.ChatApplication.Dto.Response.PostResponseWithUser;
+import com.chat_application.ChatApplication.Entities.Post;
+import com.chat_application.ChatApplication.Entities.User;
+import com.chat_application.ChatApplication.Services.post.IPostService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@CrossOrigin
+@RestController
+@RequestMapping("/v1/post")
+public class PostController {
+    @Autowired
+    private IPostService service;
+
+    @PostMapping("/findAll")
+    public ApiResponse<List<Post>> findAll() {
+        ApiResponse<List<Post>> response = service.findAll();
+        return response;
+    }
+    @PostMapping("/getAllForAdmin")
+    public List<PostResponse> getAllForAdmin() {
+        List<PostResponse> response = service.getAllForAdmin();
+        return response;
+    }
+
+    @PostMapping("/findAllByMultipleUser")
+    public ApiResponse<List<Post>> findAllByMultipleUser(@RequestBody List<User> users) {
+        ApiResponse<List<Post>> response = service.findAllByUserList(users);
+        return response;
+    }
+
+    @PostMapping("/findAllPost")
+    public ApiResponse<List<Post>> findAllPost() {
+        ApiResponse<List<Post>> response = service.findAllPost();
+        return response;
+    }
+
+    @PostMapping("/add")
+    public ApiResponse<Post> add(@RequestBody Post post) {
+        System.out.println(post);
+        ApiResponse<Post> response = service.add(post);
+        return response;
+    }
+
+    @PostMapping("/updateCaption")
+    public ApiResponse<Post> updateCaption(@RequestBody Post post) {
+        ApiResponse<Post> response = service.updateCaption(post.getId(), post.getCaption());
+        return response;
+    }
+
+    @PostMapping("/changeVisible")
+    public boolean changeVisible(@RequestParam int id) {
+        return service.changeVisible(id);
+    }
+
+    @PostMapping("/updateVisible")
+    public ApiResponse<Post> updateVisible(@RequestBody Post post) {
+        ApiResponse<Post> response = service.updateVisible(post.getId(), post.isVisible());
+        return response;
+    }
+
+    @PostMapping("/update")
+    public ApiResponse<Post> update(@RequestBody Post post) {
+        // Update cả caption và visible nếu có
+        ApiResponse<Post> response;
+        if (post.getCaption() != null) {
+            response = service.updateCaption(post.getId(), post.getCaption());
+        } else {
+            response = service.updateVisible(post.getId(), post.isVisible());
+        }
+        return response;
+    }
+
+    @PostMapping("/delete")
+    public ApiResponse<String> delete(@RequestBody Post post) {
+        return service.delete(post.getId());
+    }
+
+    @PostMapping("/{id}")
+    public Post getPost(@PathVariable int id) {
+        return service.getPostById(id);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<Post> getPostById(@PathVariable int id) {
+        Post post = service.getPostById(id);
+        return ApiResponse.<Post>builder()
+                .result(post)
+                .message("Get post successfully")
+                .build();
+    }
+
+    /**
+     * API endpoint to retrieve a list of posts associated with a specific username.
+     * <p>
+     * This endpoint accepts a POST request with a JSON body containing the username
+     * of the user whose posts are to be fetched. The API will return a response containing
+     * a list of posts that are visible and associated with the provided username.
+     * <p>
+     * Request Body Example:
+     * {
+     * "username": "KhuongVo2105",
+     * "password": "",
+     * "email": ""
+     * }
+     * <p>
+     * In this example, the "username" field is required to identify the user. The "password"
+     * and "email" fields are included in the request body but are not utilized in this API call.
+     * <p>
+     * Response:
+     * The API will return an ApiResponse object containing a list of PostResponseWithoutUser
+     * objects, which represent the posts without any user information. Each post in the response
+     * will include details such as the post ID, visibility status, caption, and timestamps for
+     * creation and updates.
+     * <p>
+     * Example Response:
+     * {
+     * "result": [
+     * {
+     * "id": 1,
+     * "visible": true,
+     * "caption": "This is a sample caption for the post.",
+     * "createdAt": "2025-01-02T05:23:26.567+00:00",
+     * "updatedAt": "2025-01-02T05:23:26.567+00:00"
+     * },
+     * {
+     * "id": 2,
+     * "visible": true,
+     * "caption": "Another post caption.",
+     * "createdAt": "2025-01-03T05:23:26.567+00:00",
+     * "updatedAt": "2025-01-03T05:23:26.567+00:00"
+     * }
+     * ]
+     * }
+     * <p>
+     * This API is useful for clients who want to display a user's posts in their application
+     * without exposing any user-related information.
+     */
+    @PostMapping("/postOfUsername")
+    public ApiResponse<List<PostResponseWithoutUser>> postOfUsername(@RequestBody UsernameRequest req) {
+        ApiResponse<List<PostResponseWithoutUser>> response = ApiResponse.<List<PostResponseWithoutUser>>builder()
+                .result(service.postOfUsername(req.getUsername()))
+                .build();
+        return response;
+    }
+
+    /**
+     * API endpoint to retrieve posts with full user information by username.
+     * This is similar to postOfUsername but includes complete user details.
+     */
+    @PostMapping("/postOfUsernameWithUser")
+    public ApiResponse<List<PostResponseWithUser>> postOfUsernameWithUser(@RequestBody UsernameRequest req) {
+        ApiResponse<List<PostResponseWithUser>> response = ApiResponse.<List<PostResponseWithUser>>builder()
+                .result(service.postOfUsernameWithUser(req.getUsername()))
+                .message("Get posts with user info successfully")
+                .build();
+        return response;
+    }
+
+    @PostMapping("/allPostInMonth")
+    int allPostInMonth() {
+        return service.allPostInMonth();
+    }
+
+    @PostMapping("/allPostInDay")
+    int allPostInDay() {
+        return service.allPostInDay();
+    }
+
+    @PostMapping("/allPost")
+    int allPost() {
+        return service.allPost();
+    }
+
+    // Admin APIs
+    @GetMapping("/blog/{id}")
+    public ApiResponse<Post> getBlog(@PathVariable int id) {
+        Post post = service.getPostById(id);
+        return ApiResponse.<Post>builder()
+                .result(post)
+                .message("Get blog successfully")
+                .build();
+    }
+
+    @PostMapping("/createBlog")
+    public ApiResponse<Post> createBlog(@RequestBody @Valid BlogCreateReq req) {
+        return service.createBlog(req);
+    }
+
+    @PostMapping("/updateBlog")
+    public ApiResponse<Post> updateBlog(@RequestBody @Valid BlogUpdateReq req) {
+        return service.updateBlog(req);
+    }
+
+    @GetMapping("/generatePresignedUrl")
+    public ApiResponse<String> generatePresignedUrl() {
+        String url = service.generatePresignedUrl();
+        return ApiResponse.<String>builder()
+                .result(url)
+                .message("Generate presigned URL successfully")
+                .build();
+    }
+}
