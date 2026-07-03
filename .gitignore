@@ -201,3 +201,9 @@ ChatApplication/src/main/resources/firebase
 
 # Ignore CMake (C++) build files
 InstagramClone/android/app/.cxx/
+
+# AI-DLC local workflow artifacts (do not commit)
+**/.aidlc-rule-details/
+**/aidlc-docs/
+**/.aidlc/
+**/.ai-dlc/

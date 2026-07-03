@@ -108,6 +108,15 @@ public class MessageController {
         }
     }
 
+    @GetMapping("/contacts")
+    public List<User> listConversationContacts(@RequestParam String userId) {
+        try {
+            return messageService.listConversationContacts(UUID.fromString(userId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid UUID format");
+        }
+    }
+
     //Hàm thu hồi
 //    @PostMapping("/recall")
 //    public ResponseEntity<String> recallMessage(@RequestBody MessageRecall message) {

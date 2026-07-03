@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class CloudinaryService implements ICloudinaryService {
@@ -25,6 +27,7 @@ public class CloudinaryService implements ICloudinaryService {
     public static final String FOLDER_AVATAR = "avatars";
 
     public Cloudinary cloudinary;
+    private final Map<String, List<String>> mediaFolderCache = new ConcurrentHashMap<>();
 
     public CloudinaryService() {
         Dotenv dotenv = Dotenv.load();
@@ -66,6 +69,7 @@ public class CloudinaryService implements ICloudinaryService {
             Map uploadResultVideo = cloudinary.uploader().upload(videoFile, params1);
             videoFile.deleteOnExit();
         }
+        mediaFolderCache.remove(FOLDER_POST + "/" + userId + "/" + postId);
 
         return ApiResponse.<String>builder()
                 .code(200)
@@ -142,6 +146,7 @@ public class CloudinaryService implements ICloudinaryService {
     public ApiResponse<String> deleteFolderMedia(String folderName) {
         try {
             deleteFolderContentsImage(folderName);
+            mediaFolderCache.keySet().removeIf(key -> key.equals(folderName) || key.startsWith(folderName + "/"));
 
             return ApiResponse.<String>builder()
                     .code(200)
@@ -156,7 +161,11 @@ public class CloudinaryService implements ICloudinaryService {
     }
 
 
-    private List<String> getAllMediaFromFolder(String folder) throws Exception {
+    private List<String> loadMediaUrls(String folder) throws Exception {
+        List<String> cached = mediaFolderCache.get(folder);
+        if (cached != null) {
+            return cached;
+        }
         List<String> mediaUrl = new ArrayList<>();
         Map result = cloudinary.search()
                 .expression("folder:" + folder)
@@ -164,22 +173,65 @@ public class CloudinaryService implements ICloudinaryService {
 
         List<Map> resources = (List<Map>) result.get("resources");
         for (Map resource : resources) {
-            String url = resource.get("url").toString();
+            Object secureUrl = resource.get("secure_url");
+            String url = (secureUrl != null ? secureUrl : resource.get("url")).toString();
             mediaUrl.add(url);
         }
 
-        return mediaUrl;
+        List<String> immutableResult = List.copyOf(mediaUrl);
+        mediaFolderCache.put(folder, immutableResult);
+        return immutableResult;
+    }
+
+    @Override
+    public ApiResponse<String> uploadChatImage(MultipartFile file, String senderId, String receiverId) throws IOException {
+        String conversation = senderId.compareTo(receiverId) <= 0
+                ? senderId + "_" + receiverId
+                : receiverId + "_" + senderId;
+        Map params = ObjectUtils.asMap(
+                "resource_type", "image",
+                "asset_folder", "chats/" + conversation,
+                "unique_filename", true,
+                "overwrite", false
+        );
+        Map result = cloudinary.uploader().upload(file.getBytes(), params);
+        String url = String.valueOf(result.get("secure_url"));
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Upload chat image successfully")
+                .result(url)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<String>> getAllMediaFromFolder(String folderName) throws Exception {
+        return ApiResponse.<List<String>>builder()
+                .code(200)
+                .message("Get media successfully")
+                .result(loadMediaUrls(folderName))
+                .build();
     }
 
     @Override
     public ApiResponse<List<List<String>>> getAllMultipleMediaFromFolder(List<String> folders) throws Exception {
 
-        List<List<String>> mediaUrls = new ArrayList<>();
-
-
-        for(String folder : folders){
-            List<String> mediaUrl = getAllMediaFromFolder(folder);
-            mediaUrls.add(mediaUrl);
+        List<List<String>> mediaUrls;
+        try {
+            mediaUrls = folders.parallelStream()
+                    .map(folder -> {
+                        try {
+                            return loadMediaUrls(folder);
+                        } catch (Exception exception) {
+                            throw new CompletionException(exception);
+                        }
+                    })
+                    .toList();
+        } catch (CompletionException exception) {
+            Throwable cause = exception.getCause();
+            if (cause instanceof Exception checkedException) {
+                throw checkedException;
+            }
+            throw exception;
         }
 
         return ApiResponse.<List<List<String>>>builder()

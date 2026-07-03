@@ -19,6 +19,11 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Native Android clients connect directly with WebSocket/STOMP.
+        registry.addEndpoint("/ws-native")
+                .setAllowedOriginPatterns("*");
+
+        // Keep SockJS for the legacy web/React Native client.
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();

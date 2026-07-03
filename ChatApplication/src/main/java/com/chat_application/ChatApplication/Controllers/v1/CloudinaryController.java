@@ -52,4 +52,18 @@ public class CloudinaryController {
     public ApiResponse<List<List<String>>> getAllMultiple(@RequestBody List<String> folders) throws Exception {
         return service.getAllMultipleMediaFromFolder(folders);
     }
+
+    @PostMapping(value = "/chat", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<String> uploadChatImage(
+            @RequestParam("fileUpload") MultipartFile file,
+            @RequestParam String senderId,
+            @RequestParam String receiverId
+    ) throws IOException {
+        return service.uploadChatImage(file, senderId, receiverId);
+    }
+
+    @GetMapping("/getAll")
+    public ApiResponse<List<String>> getAll(@RequestParam String folder) throws Exception {
+        return service.getAllMediaFromFolder(folder);
+    }
 }

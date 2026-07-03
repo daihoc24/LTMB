@@ -20,10 +20,12 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final NotificationBridge notificationBridge;
 
-    public CommentService(CommentRepository commentRepository, UserService userService) {
+    public CommentService(CommentRepository commentRepository, UserService userService, NotificationBridge notificationBridge) {
         this.commentRepository = commentRepository;
         this.userService = userService;
+        this.notificationBridge = notificationBridge;
     }
 
     public CommentResponse create(CommentRequest request) {
@@ -41,6 +43,11 @@ public class CommentService {
                 .build();
 
         Comment saved = commentRepository.save(comment);
+        notificationBridge.comment(
+                request.getUserId(),
+                request.getPostId(),
+                request.getPreComment() == null ? 0 : request.getPreComment()
+        );
         return toResponse(saved);
     }
 
