@@ -35,8 +35,8 @@ const CreatePassword = ({navigation, route}) => {
   };
 
   return (
-    <View className="w-full h-full flex items-center bg-white">
-      <View className="w-96 mt-4">
+    <View className="flex-1 w-full items-center bg-white">
+      <View className="w-11/12 mt-4">
         <Text className="text-3xl font-semibold mb-1">Create a password</Text>
         <Text className="text-base mb-7">
           Create a password with at least 6 letters or numbers. It should be
@@ -44,7 +44,7 @@ const CreatePassword = ({navigation, route}) => {
         </Text>
 
         {/* Password input */}
-        <View className="w-96 relative">
+        <View className="w-full relative">
           <TextInput
             className="enabled:hover:border-gray-40 border py-2 px-4 w-full hover:shadow mb-3 rounded-2xl"
             onChangeText={setPassword}
@@ -65,7 +65,7 @@ const CreatePassword = ({navigation, route}) => {
 
         {/* Go to next page button */}
         <TouchableOpacity
-          className="w-96 bg-blue-600 py-2 rounded-full mb-3"
+          className="w-full bg-blue-600 py-2 rounded-full mb-3"
           onPress={handleBirthday}>
           <Text className="text-center text-lg font-medium text-white">
             Next

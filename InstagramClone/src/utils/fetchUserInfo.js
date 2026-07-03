@@ -25,15 +25,11 @@ const fetchUserInfo = async () => {
 
   const endpoint = ENDPOINTS.USER.MY_INFORMATION;
   try {
-    const response = await axios.post(
-      endpoint, // URL
-      {}, // Request body (ở đây là rỗng vì không truyền dữ liệu)
-      {
-        headers: {
-          Authorization: `Bearer ${tokenContext}`,
-        },
+    const response = await axios.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${tokenContext}`,
       },
-    );
+    });
     console.log('\tLoad user profile is successfully');
 
     // Kiểm tra phản hồi từ server

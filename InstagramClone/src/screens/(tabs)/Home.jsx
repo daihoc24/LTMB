@@ -68,7 +68,7 @@ const Home = ({ navigation, route }) => {
   const fetchUserInfo = async () => {
     const endpoint = ENDPOINTS.USER.MY_INFORMATION;
     try {
-      const response = await axios.post(endpoint, {}, {
+      const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${tokenContext}`,
         },
