@@ -22,4 +22,22 @@ public class NotificationController {
         List<NotificationResponse> notifications = notificationService.getAllNotifyByUseId(userId);
          return notifications;
     }
+
+    @PostMapping("/add")
+    public void addNotification(
+            @RequestParam String userId,
+            @RequestParam String title,
+            @RequestParam String message
+    ) {
+        notificationService.addNotification(userId, title, message);
+    }
+
+    @PostMapping("/comment-event")
+    public void commentEvent(
+            @RequestParam String actorId,
+            @RequestParam int postId,
+            @RequestParam(defaultValue = "0") int parentCommentId
+    ) {
+        notificationService.addCommentNotification(actorId, postId, parentCommentId);
+    }
 }

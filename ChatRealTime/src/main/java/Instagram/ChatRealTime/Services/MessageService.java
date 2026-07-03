@@ -18,10 +18,14 @@ import java.util.UUID;
 public class MessageService {
     private final MessageRepository messageRepository;
     private final GroupChatService groupChatService;
+    private final NotificationBridge notificationBridge;
+    private final UserService userService;
 
-    public MessageService(MessageRepository messageRepository, GroupChatService groupChatService) {
+    public MessageService(MessageRepository messageRepository, GroupChatService groupChatService, NotificationBridge notificationBridge, UserService userService) {
         this.messageRepository = messageRepository;
         this.groupChatService = groupChatService;
+        this.notificationBridge = notificationBridge;
+        this.userService = userService;
     }
 
     //    Lấy tin nhắn cũ
@@ -30,7 +34,16 @@ public class MessageService {
     }
     //Lưu tin nhắn
     public Message saveMessage(Message message){
-        return messageRepository.save(message);
+        Message saved = messageRepository.save(message);
+        if (message.getUserIdTo() != null) {
+            User sender = userService.findByUserById(message.getUserIdSend());
+            notificationBridge.notify(
+                    message.getUserIdTo().toString(),
+                    "Tin nhắn mới",
+                    (sender != null ? sender.getUsername() : "Ai đó") + ": " + message.getContent()
+            );
+        }
+        return saved;
     }
     //Lấy ra danh sách bạn bè và tin nhắn cuối cùng
     public List<MessegeRequest> ListFriendMessage(UUID userIdSend){
@@ -92,6 +105,10 @@ public class MessageService {
 
     public List<User> listFollowing(UUID userId){
         return messageRepository.listFollowers(userId);
+    }
+
+    public List<User> listConversationContacts(UUID userId) {
+        return messageRepository.findAllFriendsByUserId(userId);
     }
 
 }

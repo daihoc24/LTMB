@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
 
-    List<Notification> findAllByReceptUser(User user);
+    List<Notification> findAllByReceptUserOrderByCreatedAtDesc(User user);
 }

@@ -8,6 +8,7 @@ import com.chat_application.ChatApplication.Repositories.LikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.chat_application.ChatApplication.Services.NotificationService;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
 public class LikeService implements ILikeService {
     @Autowired
     private LikeRepository repository;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public ApiResponse<List<Like>> findAll() {
@@ -28,10 +31,19 @@ public class LikeService implements ILikeService {
     @Override
     public ApiResponse<Like> add(Like like) {
         if(repository.existsByUserAndPost(like.getUser(), like.getPost())) return null;
-
+        Like saved = repository.save(like);
+        if (!like.getUser().getId().equals(like.getPost().getUser().getId())) {
+            try {
+                notificationService.addNotification(
+                        like.getPost().getUser().getId().toString(),
+                        "Lượt thích mới",
+                        like.getUser().getUsername() + " đã thích bài viết của bạn"
+                );
+            } catch (Exception ignored) { }
+        }
         return ApiResponse.<Like>builder()
                 .message("add like successfully")
-                .result(repository.save(like))
+                .result(saved)
                 .build();
     }
 
