@@ -92,8 +92,8 @@ const RegisterEmail = ({navigation}) => {
   };
 
   return (
-    <View className="w-full h-full flex items-center bg-white">
-      <View className="w-96 mt-3">
+    <View className="flex-1 w-full items-center bg-white">
+      <View className="w-11/12 mt-3">
         <Text className="text-3xl font-semibold mb-1">What's your email?</Text>
         <Text className="text-base mb-7">
           Enter the email where you can be contacted. No one will see this on
@@ -102,7 +102,7 @@ const RegisterEmail = ({navigation}) => {
 
         {/* Email field */}
         <TextInput
-          className="enabled:hover:border-gray-40 border py-2 px-4 w-96 hover:shadow mb-4 rounded-2xl drop-shadow-2xl"
+          className="border border-gray-300 py-2 px-4 w-full mb-4 rounded-2xl"
           onChangeText={setEmail}
           placeholder="Email"
           value={email}
@@ -110,7 +110,7 @@ const RegisterEmail = ({navigation}) => {
 
         {/* Send OTP message button */}
         <TouchableOpacity
-          className="w-96 bg-blue-600 py-2 rounded-full"
+          className="w-full bg-blue-600 py-2 rounded-full"
           onPress={handleRegisterEmail}
           disabled={loading}>
           <Text className="text-center text-xl font-medium text-white">

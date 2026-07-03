@@ -92,13 +92,9 @@ const NewPostScreen = () => {
 
     try {
       const userInfoEndpoint = ENDPOINTS.USER.MY_INFORMATION;
-      const userInfoResponse = await axios.post(
-        userInfoEndpoint,
-        {},
-        {
-          headers: { Authorization: `Bearer ${tokenContext}` },
-        },
-      );
+      const userInfoResponse = await axios.get(userInfoEndpoint, {
+        headers: {Authorization: `Bearer ${tokenContext}`},
+      });
       const user = userInfoResponse.data.result;
       const newPost = {
         caption: text,

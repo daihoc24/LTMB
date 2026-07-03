@@ -16,8 +16,8 @@ const RegisterUsername = ({navigation, route}) => {
   }, [route.params]);
 
   return (
-    <View className="w-full h-full flex items-center bg-white">
-      <View className="w-96 mt-4">
+    <View className="flex-1 w-full items-center bg-white">
+      <View className="w-11/12 mt-4">
         <Text className="text-3xl font-semibold mb-1">Create a username</Text>
         <Text className="text-base mb-7">
           Add a username or use our suggestion. You can change this at any time.
@@ -33,7 +33,7 @@ const RegisterUsername = ({navigation, route}) => {
 
         {/* Go to next page */}
         <TouchableOpacity
-          className="w-96 bg-blue-600 py-2 rounded-full mb-3"
+          className="w-full bg-blue-600 py-2 rounded-full mb-3"
           onPress={() =>
             navigation.navigate('Register', {
               email: email,

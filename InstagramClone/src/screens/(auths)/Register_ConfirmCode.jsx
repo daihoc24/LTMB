@@ -99,8 +99,8 @@ const RegisterConfirmCode = ({navigation, route}) => {
   };
 
   return (
-    <View className="w-full h-full flex items-center bg-white">
-      <View className="w-96 mt-3">
+    <View className="flex-1 w-full items-center bg-white">
+      <View className="w-11/12 mt-3">
         <Text className="text-2xl font-bold mb-1 instagram">
           Enter the confirmation code
         </Text>
@@ -109,14 +109,14 @@ const RegisterConfirmCode = ({navigation, route}) => {
         </Text>
 
         <TextInput
-          className="enabled:hover:border-gray-40 border py-2 px-4 w-96 hover:shadow mb-5 rounded-2xl drop-shadow-2xl"
+          className="border border-gray-300 py-2 px-4 w-full mb-5 rounded-2xl"
           onChangeText={setConfirmCode}
           placeholder="Confirmation code"
           value={confirmCode}
         />
 
         <TouchableOpacity
-          className="w-96 bg-blue-600 py-2 rounded-full mb-3"
+          className="w-full bg-blue-600 py-2 rounded-full mb-3"
           onPress={handleRegisterCode}
           disabled={loading}>
           <Text className="text-center text-lg font-medium text-white">
@@ -125,7 +125,7 @@ const RegisterConfirmCode = ({navigation, route}) => {
         </TouchableOpacity>
 
         <Pressable
-          className="w-96 py-2 rounded-full border"
+          className="w-full py-2 rounded-full border border-gray-300"
           onPress={handleResendCode}
           disabled={!isResendEnabled}>
           <Text className="text-center text-base font-medium text-gray-700">

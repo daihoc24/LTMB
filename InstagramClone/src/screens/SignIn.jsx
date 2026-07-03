@@ -176,11 +176,22 @@ const SignIn = ({navigation, route}) => {
   };
 
   return (
-    <View className="w-full h-full flex justify-center items-center bg-white">
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 16,
+      }}>
       {/* Image */}
-      <View style={{width: Math.min(screenWidth * 0.7, 320), marginBottom: screenHeight * 0.05}}>
+      <View
+        style={{
+          width: Math.min(screenWidth * 0.58, 240),
+          marginBottom: Math.min(screenHeight * 0.04, 32),
+        }}>
         <Image
-          style={{width: '100%', height: 80}}
+          style={{width: '100%', height: 64}}
           source={images.logo_text}
           resizeMode="contain"
         />
@@ -244,7 +255,13 @@ const SignIn = ({navigation, route}) => {
       <TouchableOpacity
         style={{width: inputWidth, marginBottom: 12}}
         onPress={() => Alert.alert('Feature not implemented')}>
-        <Text className="text-blue-600 text-right drop-shadow-md font-medium" style={{fontSize: 14}}>
+        <Text
+          style={{
+            color: '#2563eb',
+            textAlign: 'right',
+            fontWeight: '500',
+            fontSize: 14,
+          }}>
           Forgotten password?
         </Text>
       </TouchableOpacity>

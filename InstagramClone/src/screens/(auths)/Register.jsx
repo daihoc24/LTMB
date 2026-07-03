@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, Alert, Pressable, Dimensions} from 'react-native';
+import {View, Text, TouchableOpacity, Alert, Dimensions} from 'react-native';
 import axios from 'axios';
 import ENDPOINTS from '../../config/endpoints';
 
@@ -66,29 +66,60 @@ const Register = ({navigation, route}) => {
   };
 
   return (
-    <View className="w-full h-full flex items-center bg-white">
-      <View style={{width: contentWidth, marginTop: 16, paddingHorizontal: 16}}>
-        <Text style={{fontSize: Math.min(screenWidth * 0.08, 28), fontWeight: '600', marginBottom: 4}}>
-          To sign up, read and agree to our terms and policies
+    <View style={{flex: 1, alignItems: 'center', backgroundColor: '#ffffff'}}>
+      <View style={{width: contentWidth, marginTop: 36}}>
+        <View
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            backgroundColor: '#eff6ff',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 24,
+          }}>
+          <Text style={{fontSize: 28, fontWeight: '700', color: '#2563eb'}}>✓</Text>
+        </View>
+
+        <Text
+          style={{
+            fontSize: Math.min(screenWidth * 0.075, 28),
+            lineHeight: 35,
+            fontWeight: '700',
+            color: '#111827',
+            marginBottom: 12,
+          }}>
+          One last step
         </Text>
-        <Text style={{fontSize: 14, marginBottom: 28, color: '#6b7280'}}>
-          By signing up you agree to Instagram's Terms, Privacy Policy and
-          Cookies Policy
+
+        <Text style={{fontSize: 15, lineHeight: 22, marginBottom: 28, color: '#6b7280'}}>
+          By creating an account, you agree to Instagram's{' '}
+          <Text style={{color: '#2563eb', fontWeight: '600'}}>Terms</Text>,{' '}
+          <Text style={{color: '#2563eb', fontWeight: '600'}}>Privacy Policy</Text>{' '}
+          and{' '}
+          <Text style={{color: '#2563eb', fontWeight: '600'}}>Cookies Policy</Text>.
         </Text>
 
         <TouchableOpacity
           style={{
             backgroundColor: '#2563eb',
-            paddingVertical: 12,
-            borderRadius: 24,
+            minHeight: 50,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 25,
             marginBottom: 12,
+            opacity: loading ? 0.65 : 1,
           }}
           onPress={handleRegister}
           disabled={loading}>
           <Text style={{textAlign: 'center', fontSize: 16, fontWeight: '500', color: '#ffffff'}}>
-            {loading ? 'Registering...' : 'I agree'}
+            {loading ? 'Creating account...' : 'Agree and create account'}
           </Text>
         </TouchableOpacity>
+
+        <Text style={{textAlign: 'center', fontSize: 12, lineHeight: 18, color: '#9ca3af'}}>
+          You can review these policies at any time in Settings.
+        </Text>
       </View>
     </View>
   );

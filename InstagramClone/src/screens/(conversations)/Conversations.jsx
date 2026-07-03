@@ -12,7 +12,7 @@ import {
   fetchGroups,
   loadGroupDetails,
   loadUserDetails,
-} from './ConversationsHelper'; // Import các hook và hàm từ helper
+} from './ConversationHelper'; // Import các hook và hàm từ helper
 import {AuthContext} from '../../context/AuthContext';
 
 const Conversations = ({navigation, route}) => {
